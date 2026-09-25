@@ -1,9 +1,10 @@
-# Local secrets: a gitignored backend/.env (KEY=value lines) is loaded into Spring's Environment.
-# Java cannot read .env through System.getenv(); this import is what makes ${GEMINI_API_KEY} resolve
-# from the file. A real environment variable of the same name takes precedence.
+# Local secrets: a gitignored .env (KEY=value lines) is loaded into Spring's Environment, from the
+# repo root (../.env, the same file Docker Compose reads) and/or backend/.env. Later imports win, so
+# backend/.env overrides the root file. Java cannot read .env through System.getenv(); this import is
+# what makes ${GEMINI_API_KEY} resolve from the file. A real environment variable takes precedence.
 spring:
   config:
-    import: optional:file:.env[.properties]
+    import: optional:file:../.env[.properties],optional:file:.env[.properties]
   application:
     name: claude-code-coach
   threads:

@@ -43,7 +43,7 @@ All other settings (temperature, max tokens, top-k, rate limits, chunk sizes…)
 ```bash
 # 1. Backend (http://localhost:8080)
 cd backend
-export GEMINI_API_KEY=your-key        # or: cp ../.env.example .env and fill it in
+export GEMINI_API_KEY=your-key        # or: cp ../.env.example ../.env and fill it in
 ./mvnw spring-boot:run
 
 # 2. Frontend (http://localhost:5173), in a second terminal
@@ -58,9 +58,11 @@ The first start downloads the Claude Code docs (about 210 pages) and builds the 
 background, which takes about 20 seconds. `GET http://localhost:8080/api/health` shows progress
 (`index.details.state`: `INDEXING` → `READY`).
 
-> **Why `backend/.env` works:** Java can't read a `.env` file with `System.getenv()`. The backend
-> imports it into Spring's configuration (`spring.config.import: optional:file:.env[.properties]`),
-> so `GEMINI_API_KEY=...` in `backend/.env` is picked up. A real environment variable wins.
+> **One `.env` for everything:** put `.env` in the repo root. Docker Compose reads it, and so does
+> `./mvnw spring-boot:run` from `backend/`. Java can't read a `.env` file with `System.getenv()`, so the
+> backend imports it into Spring's configuration
+> (`spring.config.import: optional:file:../.env[.properties],optional:file:.env[.properties]`).
+> An optional `backend/.env` overrides the root file; a real environment variable wins over both.
 
 ## Run with Docker
 
@@ -165,8 +167,9 @@ deprecated.
 
 ## Troubleshooting
 
-**"GEMINI_API_KEY is not set" at startup.** Export the variable or add it to `backend/.env`
-(local) or `.env` (Docker). The backend refuses to start without it.
+**"GEMINI_API_KEY is not set" at startup.** Export the variable, or add it to `.env` in the repo
+root (`cp .env.example .env`). Start the backend from `backend/`: the file is found relative to the
+directory you run `./mvnw` from. The backend refuses to start without it.
 
 **"The assistant is not configured correctly…" in the chat.** Google rejected the request
 (HTTP 400/401/403/404). The backend log says which, for example

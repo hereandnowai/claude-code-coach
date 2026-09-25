@@ -6,7 +6,7 @@ Chatbot that answers Claude Code questions from the official docs. Spring Boot b
 
 ```bash
 # backend (from backend/)
-./mvnw spring-boot:run          # needs GEMINI_API_KEY (env var or backend/.env)
+./mvnw spring-boot:run          # needs GEMINI_API_KEY (env var, root .env, or backend/.env)
 ./mvnw verify                   # all tests; LiveGemmaTest runs only if GEMINI_API_KEY is exported
 ./mvnw -Dtest=LuceneDocumentRetrieverTest test
 
@@ -26,7 +26,7 @@ docker compose up --build       # http://localhost:8081
   embedding, reranker or fallback model, and never write another model's name anywhere in the repo
   (not even in docs or tests): the acceptance check greps for it.
 - `GEMINI_API_KEY` stays in the backend: read via `${GEMINI_API_KEY}` in application.yml, never
-  `System.getenv()` (it can't see `backend/.env`), never logged, never returned by an endpoint.
+  `System.getenv()` (it can't see `.env` files), never logged, never returned by an endpoint.
 - No raw HTML rendering in the frontend (no `rehype-raw`, no `dangerouslySetInnerHTML`).
 - No TypeScript `any`.
 
