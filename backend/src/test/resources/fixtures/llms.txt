@@ -1,0 +1,9 @@
+# Claude Code Docs
+
+## Getting started
+
+- [Quickstart](https://code.claude.com/docs/en/quickstart.md): Welcome to Claude Code!
+- [Connect Claude Code to tools via MCP](https://code.claude.com/docs/en/mcp.md): Learn how to connect Claude Code to your tools.
+- [Automate actions with hooks](https://code.claude.com/docs/en/hooks-guide.md): Run shell commands automatically.
+- [How Claude remembers your project](https://code.claude.com/docs/en/memory.md): CLAUDE.md files and auto memory.
+- [Documentation en français](https://code.claude.com/docs/_llms/fr.md)

@@ -1,0 +1,23 @@
+services:
+  backend:
+    build: ./backend
+    environment:
+      GEMINI_API_KEY: ${GEMINI_API_KEY:?Set GEMINI_API_KEY in .env or your shell}
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-}
+      COACH_ALLOWED_ORIGINS: ${COACH_ALLOWED_ORIGINS:-http://localhost:8081}
+      COACH_THINKING_LEVEL: ${COACH_THINKING_LEVEL:-LOW}
+    volumes:
+      - coach-data:/app/data   # H2 database + Lucene index survive restarts
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "${COACH_PORT:-8081}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  coach-data:

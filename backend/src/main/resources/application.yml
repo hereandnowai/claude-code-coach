@@ -1,0 +1,116 @@
+# Local secrets: a gitignored backend/.env (KEY=value lines) is loaded into Spring's Environment.
+# Java cannot read .env through System.getenv(); this import is what makes ${GEMINI_API_KEY} resolve
+# from the file. A real environment variable of the same name takes precedence.
+spring:
+  config:
+    import: optional:file:.env[.properties]
+  application:
+    name: claude-code-coach
+  threads:
+    virtual:
+      enabled: true
+  mvc:
+    async:
+      request-timeout: 5m
+
+  datasource:
+    url: jdbc:h2:file:${COACH_DATA_DIR:./data}/coach;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password: ""
+  sql:
+    init:
+      mode: always   # H2 in file mode is not treated as "embedded", so schema.sql must be forced
+
+  ai:
+    # --- Model: Google AI Studio (Gemini Developer API), API-key mode. No Vertex AI, no project id.
+    model:
+      chat: google-genai
+    google:
+      genai:
+        api-key: ${GEMINI_API_KEY:}
+        chat:
+          # Spring AI 2.x: options sit directly under .chat (1.x used .chat.options.*, now deprecated).
+          model: gemma-4-26b-a4b-it
+          temperature: 0.3
+          max-output-tokens: 4096
+          # thinking-level is set below via coach.model.thinking-level (see ModelConfig)
+    chat:
+      memory:
+        repository:
+          jdbc:
+            initialize-schema: always
+    retry:
+      max-attempts: 2
+      backoff:
+        initial-interval: 1s
+        multiplier: 2
+        max-interval: 5s
+
+coach:
+  admin-token: ${ADMIN_TOKEN:}
+  model:
+    # Gemma 4 thinking level: LOW | HIGH | NONE (NONE = don't send a thinking config at all).
+    # Thought content is never streamed or stored either way.
+    thinking-level: ${COACH_THINKING_LEVEL:LOW}
+  retrieval:
+    index-dir: ${COACH_DATA_DIR:./data}/index
+    top-k: 8
+    max-chunks-per-page: 3
+    min-score: 3.0
+    relative-cutoff: 0.25
+  ingestion:
+    llms-txt-url: https://code.claude.com/docs/llms.txt
+    page-url-prefix: https://code.claude.com/docs/en/
+    max-page-chars: 150000   # the changelog is ~850 KB; keep its newest releases only
+    cron: ${COACH_REINDEX_CRON:0 0 3 * * *}
+    on-startup-if-missing: true
+    fetch-concurrency: 6
+    fetch-timeout: 20s
+    target-chunk-tokens: 700
+    max-chunk-tokens: 900
+    overlap-tokens: 80
+  chat:
+    max-message-length: 4000
+    history-window: 10
+    query-rewrite: true
+    title-max-length: 60
+    stream-timeout: 5m
+    idle-timeout: 90s
+  web:
+    allowed-origins: ${COACH_ALLOWED_ORIGINS:http://localhost:5173}
+  rate-limit:
+    enabled: true
+    capacity: 10
+    refill-period: 1m
+
+# /api/health, /api/info — never exposes the API key.
+management:
+  endpoints:
+    web:
+      base-path: /api
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+  health:
+    diskspace:
+      enabled: false
+    ssl:
+      enabled: false
+  info:
+    env:
+      enabled: false
+
+server:
+  shutdown: graceful
+  forward-headers-strategy: framework
+
+logging:
+  pattern:
+    correlation: "[%X{requestId:-}] "
+  level:
+    com.claudecodecoach: INFO
+    org.apache.lucene: WARN
+    # Spring AI logs a full stack trace for every failed stream here; ModelErrorMapper already logs it once.
+    org.springframework.ai.chat.model.MessageAggregator: OFF
