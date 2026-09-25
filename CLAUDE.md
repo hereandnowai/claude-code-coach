@@ -27,7 +27,9 @@ docker compose up --build       # http://localhost:8081
 
 - The only model is `gemma-4-26b-a4b-it`, named once in `application.yml`. Never add another chat,
   embedding, reranker or fallback model, and never write another model's name anywhere in the repo
-  (not even in docs or tests): the acceptance check greps for it.
+  (not even in docs or tests): the acceptance check greps for it. One deliberate exception: the author
+  credit "built using Claude Code with Opus 5.5 by Ruthran Raghavan" (footer via
+  `frontend/src/lib/credits.ts`, README, `pom.xml`, `CoachApplication.java`). Keep it; don't remove it.
 - `GEMINI_API_KEY` stays in the backend: read via `${GEMINI_API_KEY}` in application.yml, never
   `System.getenv()` (it can't see `.env` files), never logged, never returned by an endpoint.
 - No raw HTML rendering in the frontend (no `rehype-raw`, no `dangerouslySetInnerHTML`).

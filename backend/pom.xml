@@ -16,6 +16,18 @@
     <version>0.1.0</version>
     <name>claude-code-coach</name>
     <description>Claude Code help chatbot: Spring AI + Gemma 4 + Lucene BM25 RAG</description>
+    <url>https://github.com/hereandnowai/claude-code-coach</url>
+
+    <!-- Built using Claude Code with Opus 5.5 by Ruthran Raghavan, Chief AI Scientist. -->
+    <developers>
+        <developer>
+            <name>Ruthran Raghavan</name>
+            <roles>
+                <role>Chief AI Scientist</role>
+            </roles>
+            <url>https://ruthranraghavan.com</url>
+        </developer>
+    </developers>
 
     <properties>
         <java.version>21</java.version>

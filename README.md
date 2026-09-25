@@ -3,6 +3,9 @@
 A chatbot that answers questions about **Claude Code** (Anthropic's agentic coding tool) for Java
 developers, grounded in the official docs at [https://code.claude.com/docs](https://code.claude.com/docs), with source links.
 
+> This app was built using Claude Code with Opus 5.5 by **Ruthran Raghavan**, Chief AI Scientist,
+> <https://ruthranraghavan.com>
+
 - **Model:** `gemma-4-26b-a4b-it` via Google AI Studio (Gemini Developer API). No other model is used anywhere.
 - **Backend:** Java 21, Spring Boot 4.1.1, Spring AI 2.0.1, Lucene 10.5.1 (BM25, no embeddings), H2 (file).
 - **Frontend:** Vite, React 19, TypeScript (strict), Tailwind CSS v4, shadcn/ui, lucide-react.
@@ -219,3 +222,9 @@ follows the same variable. Check with `curl localhost:8090/api/health`.
 - The changelog page is truncated to its newest ~150 KB when indexed.
 - A page that returns a bot-protection page instead of Markdown is skipped (logged at WARN).
 - Conversations are shared by everyone who can reach the app; there are no user accounts.
+
+## Credits
+
+This app was built using Claude Code with Opus 5.5 by Ruthran Raghavan, Chief AI Scientist,
+<https://ruthranraghavan.com>. The credit also appears in the app footer (`frontend/src/lib/credits.ts`),
+`backend/pom.xml` and `CoachApplication.java`.

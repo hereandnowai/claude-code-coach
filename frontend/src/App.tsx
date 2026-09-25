@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button'
 import { Toaster } from '@/components/ui/sonner'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useChat } from '@/hooks/useChat'
+import { CREDIT } from '@/lib/credits'
 
 const DESKTOP = '(min-width: 768px)'
 
@@ -167,6 +168,17 @@ export default function App() {
                 <Composer ref={composerRef} streaming={chat.streaming} onSend={send} onStop={chat.stop} />
                 <p className="mt-2 text-center text-[0.72rem] text-muted-foreground">
                   Answers are drawn from the Claude Code docs. Check commands before you run them.
+                </p>
+                <p className="mt-1 text-center text-[0.72rem] text-muted-foreground">
+                  {CREDIT.text} ·{' '}
+                  <a
+                    href={CREDIT.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline underline-offset-2 hover:text-foreground"
+                  >
+                    {CREDIT.label}
+                  </a>
                 </p>
               </div>
             </div>
