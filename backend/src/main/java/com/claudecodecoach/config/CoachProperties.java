@@ -22,8 +22,8 @@ public record CoachProperties(
         @DefaultValue RateLimit rateLimit,
         @DefaultValue("") String adminToken) {
 
-    /** thinkingLevel: LOW, HIGH or NONE (NONE sends no thinking config). */
-    public record Model(@DefaultValue("LOW") String thinkingLevel) {
+    /** thinkingLevel: LOW, HIGH or NONE (NONE sends no thinking config; Google currently rejects the others). */
+    public record Model(@DefaultValue("NONE") String thinkingLevel) {
     }
 
     public record Retrieval(

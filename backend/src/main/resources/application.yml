@@ -51,8 +51,10 @@ coach:
   admin-token: ${ADMIN_TOKEN:}
   model:
     # Gemma 4 thinking level: LOW | HIGH | NONE (NONE = don't send a thinking config at all).
-    # Thought content is never streamed or stored either way.
-    thinking-level: ${COACH_THINKING_LEVEL:LOW}
+    # Default NONE: since 2026-09 Google rejects thinkingLevel for gemma-4-26b-a4b-it with HTTP 400
+    # "Thinking level is not supported for this model." Gemma still thinks by default; its thought
+    # parts are filtered out and never streamed or stored either way.
+    thinking-level: ${COACH_THINKING_LEVEL:NONE}
   retrieval:
     index-dir: ${COACH_DATA_DIR:./data}/index
     top-k: 8

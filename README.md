@@ -29,7 +29,7 @@ Maven isn't needed: the backend ships the Maven wrapper (`./mvnw`).
 | ------------------------- | -------- | ---------------------------------------------------------------------------------------- |
 | `GEMINI_API_KEY`        | yes      | Google AI Studio key. Read only by the backend; never sent to the browser or logged.     |
 | `ADMIN_TOKEN`           | no       | Enables`POST /api/admin/reindex`. Without it the endpoint returns 403.                 |
-| `COACH_THINKING_LEVEL`  | no       | Gemma thinking level:`LOW` (default), `HIGH`, or `NONE`. Thoughts are never shown. |
+| `COACH_THINKING_LEVEL`  | no       | Gemma thinking level: `NONE` (default), `LOW` or `HIGH`. Google currently rejects `LOW`/`HIGH` for this model. Thoughts are never shown. |
 | `COACH_REINDEX_CRON`    | no       | Daily docs refresh, Spring cron format. Default`0 0 3 * * *` (03:00).                  |
 | `COACH_ALLOWED_ORIGINS` | no       | CORS origin(s) for the browser. Default`http://localhost:5173`.                        |
 | `COACH_DATA_DIR`        | no       | Where the H2 database and Lucene index live. Default`./data`.                          |
@@ -191,7 +191,8 @@ directory you run `./mvnw` from. The backend refuses to start without it.
 `Google AI Studio rejected the request (HTTP 400 INVALID_ARGUMENT): API key not valid`.
 Check that the key is an AI Studio key (not a Vertex AI or OAuth credential), that it has no
 quotes or spaces, and that the model name in `application.yml` is `gemma-4-26b-a4b-it`.
-If Google rejects the thinking setting for your account, set `COACH_THINKING_LEVEL=NONE`.
+The log line `Thinking level is not supported for this model` means `COACH_THINKING_LEVEL` is set to
+`LOW` or `HIGH`; remove it (the default is `NONE`).
 
 **"Gemma is receiving too many requests… try again in N seconds" (HTTP 429).** You hit the AI
 Studio rate limit. The app passes on Google's retry delay. Wait, or reduce traffic:
