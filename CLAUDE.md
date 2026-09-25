@@ -11,7 +11,7 @@ Chatbot that answers Claude Code questions from the official docs. Spring Boot b
 ./mvnw -Dtest=LuceneDocumentRetrieverTest test
 
 # frontend (from frontend/)
-npm run dev                     # http://localhost:5173, proxies /api to :8080
+npm run dev                     # http://localhost:5173, proxies /api to :8080 (or $BACKEND_PORT from root .env)
 npm test                        # vitest
 npm run lint && npm run build   # eslint (no `any`), tsc strict, vite build
 npm run format                  # prettier

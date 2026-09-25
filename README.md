@@ -33,6 +33,7 @@ Maven isn't needed: the backend ships the Maven wrapper (`./mvnw`).
 | `COACH_REINDEX_CRON`    | no       | Daily docs refresh, Spring cron format. Default`0 0 3 * * *` (03:00).                  |
 | `COACH_ALLOWED_ORIGINS` | no       | CORS origin(s) for the browser. Default`http://localhost:5173`.                        |
 | `COACH_DATA_DIR`        | no       | Where the H2 database and Lucene index live. Default`./data`.                          |
+| `BACKEND_PORT`          | no       | Local runs only: backend port, also used by the Vite `/api` proxy. Default `8080`.     |
 | `COACH_PORT`            | no       | Docker only: host port of the web app. Default`8081`.                                  |
 
 All other settings (temperature, max tokens, top-k, rate limits, chunk sizes…) are in
@@ -188,6 +189,10 @@ follow-up rewriting makes a second, small model call; turn it off with
 building. Check `/api/health`: `index.details.state` should be `READY` with `documents` > 0. If it
 shows `lastIngestionError`, the docs site couldn't be reached from the backend (proxy, firewall,
 TLS inspection); fix network access and run the reindex command above.
+
+**"Port 8080 was already in use" at startup.** Something else (often Jenkins) owns 8080. Add
+`BACKEND_PORT=8090` to the root `.env` and restart both the backend and `npm run dev`; the Vite proxy
+follows the same variable. Check with `curl localhost:8090/api/health`.
 
 **Answers stop mid-stream behind a proxy.** The proxy is buffering SSE. Disable buffering for
 `/api/chat/` (see `frontend/nginx.conf`: `proxy_buffering off`).

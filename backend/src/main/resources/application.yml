@@ -104,6 +104,9 @@ management:
       enabled: false
 
 server:
+  # Local runs: set BACKEND_PORT in the root .env when 8080 is taken (e.g. by Jenkins); the Vite dev
+  # proxy reads the same variable. Docker doesn't pass it, so the container always listens on 8080.
+  port: ${BACKEND_PORT:8080}
   shutdown: graceful
   forward-headers-strategy: framework
 
