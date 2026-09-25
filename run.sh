@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# Runs claude-code-coach locally with one command: ./start.sh
-# Asks for your Google AI Studio key if it can't find one, picks a free backend port (so Jenkins or
-# anything else on 8080 doesn't matter), installs frontend packages, starts both halves.
+# Runs claude-code-coach locally with one command: ./run.sh
+# Asks for your Google AI Studio key if it can't find one, picks free ports (so Jenkins or anything
+# else on 8080 doesn't matter), installs frontend packages, starts both halves, then opens the app in
+# Google Chrome (falls back to the default browser; OPEN_BROWSER=0 skips it).
 # Press Ctrl+C to stop everything.
 set -eu
 cd "$(dirname "$0")"
@@ -44,6 +45,9 @@ START_PORT=$PORT
 while port_busy "$PORT"; do PORT=$((PORT + 1)); done
 [ "$PORT" = "$START_PORT" ] || echo "Port $START_PORT is taken (Jenkins?), using $PORT instead."
 export BACKEND_PORT=$PORT
+FRONTEND_PORT=5173
+while port_busy "$FRONTEND_PORT"; do FRONTEND_PORT=$((FRONTEND_PORT + 1)); done
+APP_URL="http://localhost:$FRONTEND_PORT"
 
 # 4. Frontend packages (first run only)
 if [ ! -d frontend/node_modules ]; then
@@ -76,7 +80,33 @@ echo " ready."
 echo "The Claude Code docs index builds in the background (about 20 seconds)."
 echo "Backend log: $ROOT/backend.log"
 
-# 6. Frontend in the foreground
-say "Starting frontend. Open the Local URL below in your browser. Ctrl+C stops everything."
+# 6. Open Google Chrome once the frontend answers (in the background, so it can wait for Vite)
+open_chrome() {
+  case "$(uname -s)" in
+    Darwin)
+      if open -Ra "Google Chrome" 2>/dev/null; then open -a "Google Chrome" "$APP_URL"
+      else echo "Google Chrome not found; opening your default browser."; open "$APP_URL"; fi ;;
+    *)
+      if [ -z "${DISPLAY:-}${WAYLAND_DISPLAY:-}" ]; then
+        echo "No desktop session; open $APP_URL yourself."; return
+      fi
+      for c in google-chrome google-chrome-stable chromium chromium-browser; do
+        if command -v "$c" >/dev/null; then nohup "$c" "$APP_URL" >/dev/null 2>&1 & return; fi
+      done
+      echo "Google Chrome not found; opening your default browser."
+      command -v xdg-open >/dev/null && nohup xdg-open "$APP_URL" >/dev/null 2>&1 & ;;
+  esac
+}
+if [ "${OPEN_BROWSER:-1}" != "0" ]; then
+  (
+    for _ in $(seq 1 60); do
+      if curl -sf "$APP_URL/" >/dev/null; then open_chrome; exit 0; fi
+      sleep 1
+    done
+  ) &
+fi
+
+# 7. Frontend in the foreground
+say "Starting frontend on $APP_URL (opens in Chrome). Ctrl+C stops everything."
 cd frontend
-npm run dev
+npm run dev -- --port "$FRONTEND_PORT" --strictPort

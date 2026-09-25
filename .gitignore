@@ -22,5 +22,5 @@ frontend/coverage/
 # HERE AND NOW AI standard
 social-media-content/
 
-# start.sh output
+# run.sh output
 backend.log

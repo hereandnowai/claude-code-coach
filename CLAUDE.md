@@ -17,7 +17,7 @@ npm run lint && npm run build   # eslint (no `any`), tsc strict, vite build
 npm run format                  # prettier
 
 # everything, one command (asks for the key, picks a free port)
-./start.sh                      # from the repo root
+./run.sh                        # from the repo root; opens Chrome when ready
 
 # whole stack in Docker
 docker compose up --build       # http://localhost:8081

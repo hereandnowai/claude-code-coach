@@ -44,12 +44,13 @@ All other settings (temperature, max tokens, top-k, rate limits, chunk sizes…)
 ```bash
 git clone https://github.com/hereandnowai/claude-code-coach.git
 cd claude-code-coach
-./start.sh
+./run.sh
 ```
 
 The script checks Java and Node, asks for your Google AI Studio key the first time (and saves it to
 `.env`), picks a free backend port if 8080 is taken (Jenkins, another app), installs the frontend
-packages, and starts both halves. Open the `Local:` URL it prints (usually http://localhost:5173).
+packages, starts both halves and opens the app in Google Chrome (or your default browser if Chrome
+isn't installed; `OPEN_BROWSER=0 ./run.sh` skips it).
 `Ctrl+C` stops everything. Backend logs go to `backend.log`.
 
 ## Run locally (step by step)
