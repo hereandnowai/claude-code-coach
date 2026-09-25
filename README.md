@@ -39,7 +39,20 @@ Maven isn't needed: the backend ships the Maven wrapper (`./mvnw`).
 All other settings (temperature, max tokens, top-k, rate limits, chunk sizes…) are in
 `backend/src/main/resources/application.yml`.
 
-## Run locally
+## Quick start (one command)
+
+```bash
+git clone https://github.com/hereandnowai/claude-code-coach.git
+cd claude-code-coach
+./start.sh
+```
+
+The script checks Java and Node, asks for your Google AI Studio key the first time (and saves it to
+`.env`), picks a free backend port if 8080 is taken (Jenkins, another app), installs the frontend
+packages, and starts both halves. Open the `Local:` URL it prints (usually http://localhost:5173).
+`Ctrl+C` stops everything. Backend logs go to `backend.log`.
+
+## Run locally (step by step)
 
 ```bash
 # 1. Backend (http://localhost:8080)

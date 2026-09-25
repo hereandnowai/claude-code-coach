@@ -16,7 +16,10 @@ npm test                        # vitest
 npm run lint && npm run build   # eslint (no `any`), tsc strict, vite build
 npm run format                  # prettier
 
-# whole stack
+# everything, one command (asks for the key, picks a free port)
+./start.sh                      # from the repo root
+
+# whole stack in Docker
 docker compose up --build       # http://localhost:8081
 ```
 
